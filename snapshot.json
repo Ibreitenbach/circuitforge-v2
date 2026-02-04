@@ -1,16 +1,1 @@
-{
-  "runId": "web-viewer-demo",
-  "nodes": [
-    { "id": "chip_origin", "kind": "source", "label": "Origin" },
-    { "id": "fuse_consilience", "kind": "fuse", "label": "Consilience OK", "status": { "gate": "locked" } },
-    { "id": "terminal_done", "kind": "sink", "label": "DONE" }
-  ],
-  "edges": [
-    { "id": "e1", "from": { "nodeId": "chip_origin" }, "to": { "nodeId": "fuse_consilience" } },
-    { "id": "e2", "from": { "nodeId": "fuse_consilience" }, "to": { "nodeId": "terminal_done" } }
-  ],
-  "sparks": [
-    { "id": "spark_claude_ac", "kind": "ac", "hp": 100, "at_node_id": "chip_origin" },
-    { "id": "spark_gemini_dc", "kind": "dc", "hp": 100, "at_node_id": "fuse_consilience" }
-  ]
-}
+{ "runId": "web-viewer-demo", "nodes": [], "edges": [], "sparks": [] }
