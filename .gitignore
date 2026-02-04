@@ -1,0 +1,27 @@
+# Node.js
+node_modules/
+dist/
+build/
+.next/
+.npm/
+.yarn/
+
+# Rust
+target/
+src-tauri/target/
+src-tauri/gen/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# CircuitForge artifacts
+*.db
+*.log
+artifacts/
+workspace/
+snapshot.json

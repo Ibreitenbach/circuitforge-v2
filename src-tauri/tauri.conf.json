@@ -1,0 +1,19 @@
+{
+  "productName": "CircuitForge",
+  "version": "0.1.0",
+  "identifier": "com.circuitforge.app",
+  "build": {
+    "beforeDevCommand": "",
+    "beforeBuildCommand": "",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../ui/dist"
+  },
+  "app": {
+    "withGlobalTauri": true
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": []
+  }
+}

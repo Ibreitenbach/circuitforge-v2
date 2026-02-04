@@ -1,0 +1,128 @@
+id: mintclip_construct_v1
+name: "MintClip Clipboard Manager"
+languageProfile: python
+team:
+  sparks:
+    - { id: ac_1, kind: ac }
+    - { id: dc_1, kind: dc }
+  dcConfigMode: tier1
+
+board:
+  nodes:
+    - id: chip_main
+      kind: chip
+      label: "Main Implementation"
+      pos: { x: 100, y: 100 }
+    - id: lint
+      kind: probe
+      label: "Linter"
+      pos: { x: 300, y: 50 }
+      validatorId: lint
+    - id: format
+      kind: probe
+      label: "Formatter"
+      pos: { x: 300, y: 150 }
+      validatorId: format
+    - id: unit_tests
+      kind: probe
+      label: "Unit Tests"
+      pos: { x: 300, y: 250 }
+      validatorId: unit_tests
+    - id: cli_integration
+      kind: probe
+      label: "Integration Tests"
+      pos: { x: 300, y: 350 }
+      validatorId: cli_integration
+    - id: relay_cert
+      kind: relay
+      label: "Certification Relay"
+      pos: { x: 600, y: 200 }
+      gateId: gate_cert
+
+  edges:
+    - id: t1
+      kind: trace
+      from: { nodeId: chip_main }
+      to: { nodeId: lint }
+      directed: true
+    - id: t2
+      kind: trace
+      from: { nodeId: chip_main }
+      to: { nodeId: format }
+      directed: true
+    - id: t3
+      kind: trace
+      from: { nodeId: chip_main }
+      to: { nodeId: unit_tests }
+      directed: true
+    - id: t4
+      kind: trace
+      from: { nodeId: chip_main }
+      to: { nodeId: cli_integration }
+      directed: true
+    - id: t5
+      kind: trace
+      from: { nodeId: lint }
+      to: { nodeId: relay_cert }
+      directed: true
+    - id: t6
+      kind: trace
+      from: { nodeId: format }
+      to: { nodeId: relay_cert }
+      directed: true
+    - id: t7
+      kind: trace
+      from: { nodeId: unit_tests }
+      to: { nodeId: relay_cert }
+      directed: true
+    - id: t8
+      kind: trace
+      from: { nodeId: cli_integration }
+      to: { nodeId: relay_cert }
+      directed: true
+
+gates:
+  - id: gate_cert
+    kind: relay
+    predicate:
+      type: all
+      of:
+        - { type: probePass, probeId: lint }
+        - { type: probePass, probeId: format }
+        - { type: probePass, probeId: unit_tests }
+        - { type: probePass, probeId: cli_integration }
+        - { type: patchCapsulePresent }
+
+validators:
+  - id: lint
+    kind: lint
+    cmd: ["ruff", "check", "."]
+  - id: format
+    kind: lint
+    cmd: ["ruff", "format", "--check", "."]
+  - id: unit_tests
+    kind: test
+    cmd: ["python", "-m", "pytest", "tests/unit"]
+  - id: cli_integration
+    kind: test
+    cmd: ["python", "-m", "pytest", "tests/integration"]
+
+permissions:
+  ac:
+    allowEditPaths: ["src/**", "tests/**", "README.md", "pyproject.toml"]
+  dc:
+    allowConfigPaths: [".ci/**", "tooling/**"]
+    denyEditPaths: ["src/**"]
+
+hp:
+  max: 100
+  start: 100
+  damage:
+    unitFail: 5
+    integrationFail: 15
+    qualityFail: 10
+    policyViolationAttempt: 50
+  heal:
+    unlockGateUnit: 10
+    unlockGateIntegration: 20
+    cleanRunAll: 30

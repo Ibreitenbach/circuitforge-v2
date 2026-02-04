@@ -1,0 +1,84 @@
+id: python_cli_basic
+name: "CSV→JSON Transformer (MVP)"
+languageProfile: python
+team:
+  sparks:
+    - { id: ac_1, kind: ac }
+    - { id: dc_1, kind: dc }
+  dcConfigMode: tier1
+
+board:
+  nodes:
+    - id: chip_contract
+      kind: chip
+      label: "Contract Chip"
+      pos: { x: 80, y: 120 }
+    - id: chip_core
+      kind: chip
+      label: "Core Chip"
+      pos: { x: 320, y: 120 }
+    - id: probe_unit
+      kind: probe
+      label: "Unit Probe"
+      pos: { x: 320, y: 260 }
+      validatorId: pytest_unit
+    - id: gate_unit_node
+      kind: fuse
+      label: "Unit Fuse"
+      pos: { x: 480, y: 120 }
+      gateId: gate_unit
+    - id: relay_merge
+      kind: relay
+      label: "Merge Relay"
+      pos: { x: 680, y: 120 }
+      gateId: gate_merge
+  edges:
+    - id: t1
+      kind: trace
+      from: { nodeId: chip_contract }
+      to:   { nodeId: chip_core }
+      directed: true
+    - id: t2
+      kind: trace
+      from: { nodeId: chip_core }
+      to:   { nodeId: gate_unit_node }
+      directed: true
+      inlineGateIds: [gate_unit]
+    - id: t3
+      kind: trace
+      from: { nodeId: gate_unit_node }
+      to:   { nodeId: relay_merge }
+      directed: true
+
+gates:
+  - id: gate_unit
+    kind: fuse
+    predicate: { type: probePass, probeId: probe_unit }
+  - id: gate_merge
+    kind: relay
+    predicate: { type: all, of: [{ type: patchCapsulePresent }, { type: evidenceSetPresent, validators: [pytest_unit] }] }
+
+validators:
+  - id: pytest_unit
+    kind: test
+    cmd: ["python", "-m", "pytest", "-q", "tests/unit"]
+
+permissions:
+  ac:
+    allowEditPaths: ["src/**", "docs/**"]
+  dc:
+    allowConfigPaths: [".ci/**", "tooling/**"]
+    denyEditPaths: ["src/**", "tests/**"]
+
+hp:
+  max: 100
+  start: 100
+  damage:
+    unitFail: 4
+    integrationFail: 12
+    qualityFail: 10
+    policyViolationAttempt: 80
+  heal:
+    unlockGateUnit: 10
+    unlockGateIntegration: 20
+    cleanRunAll: 25

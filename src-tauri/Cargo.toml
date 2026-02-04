@@ -1,0 +1,37 @@
+[package]
+name = "circuitforge"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.77.2"
+
+[dependencies]
+tauri = { version = "2.9.5", features = [] }
+tauri-plugin-shell = { version = "2.3.4" }
+
+tokio = { version = "1.49.0", features = ["rt-multi-thread", "macros", "time", "fs", "process", "sync", "io-util"] }
+
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+
+sqlx = { version = "0.8.6", features = ["sqlite", "runtime-tokio-rustls", "macros", "migrate"] }
+
+chrono = "0.4.43"
+sha2 = "0.10.9"
+hex = "0.4.3"
+uuid = { version = "1.20.0", features = ["v4"] }
+globset = "0.4.18"
+anyhow = "1.0.100"
+thiserror = "2.0.18"
+walkdir = "2.5.0"
+serde_yaml = "0.9.34"
+
+[dev-dependencies]
+tempfile = "3.10"
+
+[build-dependencies]
+tauri-build = { version = "2.5.3", features = [] }
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

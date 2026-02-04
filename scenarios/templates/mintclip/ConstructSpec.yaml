@@ -1,0 +1,60 @@
+id: "mintclip_construct_v1"
+kind: "cli"
+name: "MintClip Clipboard Manager"
+description: "A Linux Mint clipboard manager with persistent history and CLI interface"
+root: "."
+
+interface:
+  exports:
+    - id: "mintclip_cli"
+      type: "command"
+      signature: "mintclip [copy|paste|history|clear|daemon]"
+      notes: "Clipboard manager CLI"
+
+invariants:
+  - id: "persist_history"
+    statement: "Clipboard history persists across process restarts"
+    severity: "must"
+    probe_ref: "probe:cli_integration"
+
+  - id: "paste_returns_latest"
+    statement: "paste returns most recent clipboard entry"
+    severity: "must"
+    probe_ref: "probe:cli_integration"
+
+  - id: "history_ordered"
+    statement: "history returns entries in reverse chronological order"
+    severity: "must"
+    probe_ref: "probe:cli_integration"
+
+  - id: "max_history_respected"
+    statement: "history length does not exceed configured max size"
+    severity: "must"
+    probe_ref: "probe:unit_tests"
+
+  - id: "no_adjacent_duplicates"
+    statement: "adjacent duplicate clipboard entries are not stored"
+    severity: "must"
+    probe_ref: "probe:unit_tests"
+
+  - id: "exit_codes"
+    statement: "CLI exits with code 0 on valid commands"
+    severity: "must"
+    probe_ref: "probe:cli_integration"
+
+acceptance:
+  required_probes:
+    - "probe:unit_tests"
+    - "probe:cli_integration"
+    - "probe:lint"
+    - "probe:format"
+  pass_policy:
+    mode: "all"
+
+dependencies:
+  constructs: []
+  capsules: []
+
+metadata:
+  owner: "agent"
+  tags: ["clipboard", "linux", "cli"]

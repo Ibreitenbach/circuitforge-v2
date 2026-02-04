@@ -1,0 +1,32 @@
+# Construct Spec for python_cli_basic
+# Complying with Spec §4 (Nested under 'construct' key)
+
+construct:
+  id: "python_cli_basic_construct"
+  kind: "cli"
+  name: "CSV→JSON Transformer"
+  description: "A minimal CLI tool that converts CSV input to JSON format with verifiable invariants."
+  root: "src"
+
+  interface:
+    exports:
+      - id: "cli_main"
+        type: "command"
+        signature: "python -m transformer <input.csv>"
+        notes: "Accepts CSV on stdin or via file path."
+
+  invariants:
+    - id: "exit_zero"
+      statement: "CLI returns 0 on successful conversion"
+      severity: "must"
+      probeRef: "probe:probe_unit"
+    - id: "valid_json"
+      statement: "Output is always valid JSON"
+      severity: "must"
+      probeRef: "probe:probe_unit"
+
+  acceptance:
+    requiredProbes:
+      - "probe:probe_unit"
+    passPolicy:
+      mode: "all"
